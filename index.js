@@ -1,5 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
+const path = require('path')
 const app = express()
 
 let persons = [
@@ -26,18 +28,22 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(cors())
 
-
+// Create a new token to log the request body
 morgan.token('body', (req) => JSON.stringify(req.body))
 
+// Configure morgan to use the new token
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
+// Serve static files from the 'dist' directory
+app.use(express.static(path.join(__dirname, 'dist')))
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
-app.get('/api/info', (req, res) => {
+app.get('/info', (req, res) => {
   const date = new Date()
   const info = `
     <p>Phonebook has info for ${persons.length} people</p>
@@ -94,7 +100,12 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-const PORT = 3001
+// Serve the frontend for any other route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
