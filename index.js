@@ -30,13 +30,10 @@ let persons = [
 app.use(express.json())
 app.use(cors())
 
-// Create a new token to log the request body
 morgan.token('body', (req) => JSON.stringify(req.body))
 
-// Configure morgan to use the new token
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-// Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')))
 
 app.get('/api/persons', (req, res) => {
@@ -100,7 +97,6 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-// Serve the frontend for any other route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
