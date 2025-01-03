@@ -5,18 +5,20 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "npx rimraf dist temp-frontend && git clone https://github.com/oonahenriikka/fullstackopen.git temp-frontend && cd temp-frontend/osa2/puhelinluettelo && npm install && npm run build && xcopy dist ..\\..\\..\\dist /E /I && cd ../../.. && npx rimraf temp-frontend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oonahenriikka/fullstackopen3.git"
+    "url": "git+https://github.com/oonahenriikka/fullstack_part3.git"
   },
   "author": "Oona Nykänen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/oonahenriikka/fullstackopen3/issues"
+    "url": "https://github.com/oonahenriikka/fullstack_part3/issues"
   },
-  "homepage": "https://github.com/oonahenriikka/fullstackopen3#readme",
+  "homepage": "https://github.com/oonahenriikka/fullstack_part3#readme",
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
@@ -24,6 +26,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "rimraf": "^3.0.2"
   }
 }
