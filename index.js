@@ -117,9 +117,17 @@ const url =
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
 })
 
-const Note = mongoose.model('Note', noteSchema)
+const Person = mongoose.model('Person', personSchema)
+
+personSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
