@@ -46,6 +46,7 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/info', (req, res) => {
   const date = new Date()
+  Person.countDocuments({}).then(count => {})
   const info = `
     <p>Phonebook has info for ${persons.length} people</p>
     <p>${date}</p>
@@ -59,11 +60,13 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-  res.status(204).end()
-})
+app.delete('/api/persons/:id', (request, response) => {
+    Person.findByIdAndRemove(request.params.id).then(result => {
+      response.status(204).end()
+    }).catch(error => {
+      response.status(400).send({ error: 'malformatted id' })
+    })
+  })
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
