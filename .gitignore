@@ -1,2 +1,3 @@
 // filepath: /C:/Users/oonah/fullstack_part3_puhelinluettelo/.gitignore
 node_modules
+.env

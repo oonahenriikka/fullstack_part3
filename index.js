@@ -1,8 +1,11 @@
+require ('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const path = require('path')
 const app = express()
+const Person = require('./models/note')
+const Person = require('./models/person')
 
 let persons = [
   { 
@@ -103,31 +106,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
-})
-
-const mongoose = require('mongoose')
-
-// ÄLÄ KOSKAAN TALLETA SALASANOJA GitHubiin!
-const url =
-  `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`
-
-mongoose.set('strictQuery',false)
-mongoose.connect(url)
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-})
-
-const Person = mongoose.model('Person', personSchema)
-
-personSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
 })
