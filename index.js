@@ -4,7 +4,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const path = require('path')
 const app = express()
-const Person = require('./models/note')
 const Person = require('./models/person')
 
 let persons = [
@@ -54,16 +53,10 @@ app.get('/info', (req, res) => {
   res.send(info)
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).json({
-      error: 'person not found'
-    })
-  }
+app.get('/api/persons/:id', (request, response) => {
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -72,34 +65,23 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const generateId = () => {
-  return Math.floor(Math.random() * 1000000)
-}
-
-app.post('/api/persons', (req, res) => {
-  const body = req.body
+app.post('/api/persons', (request, response) => {
+  const body = request.body
 
   if (!body.name || !body.number) {
-    return res.status(400).json({
+    return response.status(400).json({
       error: 'name or number missing'
     })
   }
 
-  const nameExists = persons.some(person => person.name === body.name)
-  if (nameExists) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
-
-  const person = {
+  const person = new Person ({
     name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
-  res.json(person)
+  person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 })
 
 app.get('*', (req, res) => {
@@ -109,4 +91,4 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
-})
+});
