@@ -33,7 +33,7 @@ app.use(express.json())
 app.use(cors())
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-app.use(errorHandler)
+
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
@@ -43,7 +43,9 @@ const errorHandler = (error, request, response, next) => {
     }
   
     next(error)
-  }
+
+}
+app.use(errorHandler)
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(persons => {
