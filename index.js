@@ -53,15 +53,18 @@ app.get('/api/persons', (request, response, next) => {
   }).catch(error => next(error))
 })
 
+/*
 app.get('/info', (request, response, next) => {
   const date = new Date()
-  Person.countDocuments({}).then(count => {})
+  Person.countDocuments({}).then(count => {
   const info = `
-    <p>Phonebook has info for ${persons.length} people</p>
+    <p>Phonebook has info for ${count} people</p>
     <p>${date}</p>
   `
-  res.send(info)
+  response.send(info)
 }).catch(error => next(error))
+})
+*/
 
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
