@@ -82,12 +82,12 @@ app.post('/api/persons', (request, response) => {
   })
 
   person.save().then(savedPerson => {
-    res.json(savedPerson)
+    response.json(savedPerson)
   })
 })
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+app.get('*', (request, response) => {
+  response.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
 const PORT = process.env.PORT
