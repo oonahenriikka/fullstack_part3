@@ -15,9 +15,11 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlenght: 3
+    minlenght: 3,
+    required: true
   },
-  number: String
+  number: String,
+  required: true
 })
 
 const Person = mongoose.model('Person', personSchema)
