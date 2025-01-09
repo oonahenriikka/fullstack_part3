@@ -40,11 +40,13 @@ const errorHandler = (error, request, response, next) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
   
     next(error)
-
 }
+
 app.use(errorHandler)
 
 app.get('/api/persons', (request, response, next) => {
@@ -53,7 +55,6 @@ app.get('/api/persons', (request, response, next) => {
   }).catch(error => next(error))
 })
 
-/*
 app.get('/info', (request, response, next) => {
   const date = new Date()
   Person.countDocuments({}).then(count => {
@@ -64,7 +65,6 @@ app.get('/info', (request, response, next) => {
   response.send(info)
 }).catch(error => next(error))
 })
-*/
 
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
@@ -89,12 +89,6 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: 'name or number missing'
-    })
-  }
-
   const person = new Person ({
     name: body.name,
     number: body.number
@@ -106,22 +100,17 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const body = request.body
+    const { name, number } = request.body
   
-    const person = {
-      name: body.name,
-      number: body.number,
-    }
-  
-    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
+    Person.findByIdAndUpdate(
+        request.params.id,
+        { name, number },
+        { new: true, runValidators: true, context: 'query' }
+      )
       .then(updatedPerson => {
         response.json(updatedPerson)
       })
       .catch(error => next(error))
-  })
-
-app.get('*', (request, response) => {
-  response.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
 const PORT = process.env.PORT
